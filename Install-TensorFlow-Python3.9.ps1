@@ -15,6 +15,14 @@ New-Item -ItemType directory -Path $tempDirectory -Force | Out-Null
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 (New-Object System.Net.WebClient).DownloadFile($pythonUrl, $pythonNameLoc)
 
+
+#Creating object detection directory
+
+$working_dir = "C:\Object_detection\"
+
+New-Item -Path $working_dir -ItemType Directory
+
+
 # These are the silent arguments for the install of python
 # See https://docs.python.org/3/using/windows.html
 $Arguments = @()
@@ -179,3 +187,51 @@ python -m pip install -U --pre tensorflow=="2.*"
 python -m pip install tf_slim
 python -m pip install pywin32==225
 python -m pip install pycocotools
+
+
+
+### Downloading protobuff for model files extraction
+$protobuffURL = "https://github.com/protocolbuffers/protobuf/releases/download/v3.13.0/protoc-3.13.0-win64.zip"
+$protobuffLoc = $tempDirectory + "protobuff.zip"
+
+New-Item -ItemType directory -Path $tempDirectory -Force | Out-Null
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+(New-Object System.Net.WebClient).DownloadFile($protobuffURL, $protobuffLoc)
+
+
+
+
+Get-ChildItem -Path "C:\Object_detection" -Include *.* -File -Recurse | foreach { $_.Delete()}
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip
+    {
+        param([string]$zipfile, [string]$outpath)
+
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+    }
+Unzip $protobuffLoc $working_dir
+
+Get-ChildItem -Path $tempDirectory -Include *.* -File -Recurse | foreach { $_.Delete()}
+
+
+
+### Cloning Github Ripo and extracting it
+
+$tf_git_URL = "https://github.com/tensorflow/models/archive/master.zip"
+$tf_git_Loc = $tempDirectory + "master.zip"
+
+New-Item -ItemType directory -Path $tempDirectory -Force | Out-Null
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+(New-Object System.Net.WebClient).DownloadFile($tf_git_URL, $tf_git_Loc)
+
+Unzip $tf_git_Loc $working_dir
+
+Start-Process "C:/Object_detection/bin/protoc.exe" "C:\\Object_detection\\models-master\\research\\object_detection\\protos\\*.proto --python_out=."
+
+
+
+## Getting into directory for processing protec file
+cd "C:/Object_detection/models-master/research"
+
+Start-Process -FilePath "C:/Object_detection/bin/protoc.exe" -ArgumentList "object_detection/protos/*.proto --python_out=."
