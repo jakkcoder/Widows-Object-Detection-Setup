@@ -1,16 +1,16 @@
-# This is the link to download Python 3.9.0 from Python.org
+# This is the link to download Python 3.7.0 from Python.org
 # See https://www.python.org/downloads/
-$pythonUrl = "https://www.python.org/ftp/python/3.9.0/python-3.9.0-amd64.exe"
+$pythonUrl = "https://www.python.org/ftp/python/3.7.0/python-3.7.0-amd64.exe"
 
 # This is the directory that the exe is downloaded to
 $tempDirectory = "C:\temp_provision\"
 
 # Installation Directory
 # Some packages look for Python here
-$targetDir = "C:\Python39"
+$targetDir = "C:\Python37"
 
 # create the download directory and get the exe file
-$pythonNameLoc = $tempDirectory + "python390.exe"
+$pythonNameLoc = $tempDirectory + "python370.exe"
 New-Item -ItemType directory -Path $tempDirectory -Force | Out-Null
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 (New-Object System.Net.WebClient).DownloadFile($pythonUrl, $pythonNameLoc)
@@ -147,9 +147,9 @@ Param (
 
 Add-EnvExtension '.PY'
 Add-EnvExtension '.PYW'
-Add-EnvPath 'C:\Python39\'
-Add-EnvPath 'C:\Python39\'
-Add-EnvPath 'C:\Python39\Scripts\'
+Add-EnvPath 'C:\Python37\'
+Add-EnvPath 'C:\Python37\'
+Add-EnvPath 'C:\Python37\Scripts\'
 
 
 
@@ -178,15 +178,11 @@ Start-Process $VS_toolstLoc -Wait
 
 # Install a library using Pip
 python -m pip install --upgrade pip
-python -m pip install numpy
-python -m pip install pandas
-python -m pip install matplotlib
-python -m pip install scikit-learn
-python -m pip install scipy
 python -m pip install -U --pre tensorflow=="2.*"
 python -m pip install tf_slim
 python -m pip install pywin32==225
 python -m pip install pycocotools
+python -m pip install pandas
 
 
 
