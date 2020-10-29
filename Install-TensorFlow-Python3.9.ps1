@@ -183,6 +183,7 @@ python -m pip install tf_slim
 python -m pip install pywin32==225
 python -m pip install pycocotools
 python -m pip install pandas
+python -m pip install tf-models-official
 
 
 
