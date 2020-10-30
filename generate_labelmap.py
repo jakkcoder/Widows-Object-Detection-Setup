@@ -12,7 +12,6 @@ while len(classname) >0 :
     count+=1
 file.close()
 
-protobuf_file = r"C:\Object_detection\models-master\research\object_detection\images\label_map.pbtxt"
 outfile = open(protobuf_file,'w+')
 outfile.truncate(0)
 for i in output_dict.keys():   
