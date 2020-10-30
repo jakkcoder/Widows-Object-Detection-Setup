@@ -185,6 +185,7 @@ python -m pip install pycocotools
 python -m pip install pandas
 python -m pip install tf-models-official
 python -m pip install opencv-python==3.4.11.43
+python -m pip install lvis
 
 
 
